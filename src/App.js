@@ -25,6 +25,13 @@ const items =[
 
 ];
 
+/* 並び替え */
+const reorder = (list, startIndex, endIndex) => {
+  const removed = list.splice(startIndex, 1); //ドラッグ開始要素の削除
+  console.log(removed);
+  list.splice(endIndex, 0, removed[0]); //ドロップした箇所に挿入
+};
+
 const grid =8;
 
 const getListStyle =(isDraggingOver) =>({
@@ -41,9 +48,16 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle, //あらかじめ用意されている。
 });
 function App() {
+  const onDragEnd = (result) =>{
+    // console.log(result);
+    if (!result.destination) {
+      return;
+    }
+    reorder(items, result.source.index, result.destination.index);
+  };
   return (
     <div>
-      <DragDropContext>
+      <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableID="droppable">
           {(provided, snapshot) =>(
             <div
